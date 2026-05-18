@@ -18,6 +18,9 @@ jobs:
     name: Run Security Scanners
     runs-on: ubuntu-latest # Provision a clean, ephemeral Ubuntu cloud runner
 
+    permissions:
+      contents: read
+      security-events: write
     steps:
     # Step 1: Securely clone the repository codebase into the runner environment
     - name: Checkout Code
