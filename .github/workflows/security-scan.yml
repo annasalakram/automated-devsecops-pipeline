@@ -1,0 +1,54 @@
+# ==============================================================================
+# DevSecOps Automated Security Scanning Pipeline
+# Framework: GitHub Actions CI/CD Architecture
+# Purpose: Shift-Left Security Auditing (SAST & Secret Detection)
+# ==============================================================================
+
+name: DevSecOps Automated Security Scan
+
+# Define the automated pipeline triggers for continuous integration
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  security-audit:
+    name: Run Security Scanners
+    runs-on: ubuntu-latest # Provision a clean, ephemeral Ubuntu cloud runner
+
+    steps:
+    # Step 1: Securely clone the repository codebase into the runner environment
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Pull full git commit history to enable thorough secret auditing
+
+    # Step 2: Initialize Gitleaks to inspect repository history for leaked credentials
+    - name: Run Gitleaks (Secret Scanner)
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      continue-on-error: true # Ensure the pipeline proceeds if a vulnerability is flagged
+
+    # Step 3: Establish a standardized Python runtime environment on the runner
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    # Step 4: Install and execute Bandit to perform Static Application Security Testing (SAST)
+    - name: Run Bandit (Python Static Application Security Testing)
+      run: |
+        pip install bandit
+        # Audit app.py and compile findings into an exportable plain-text report
+        bandit -r app.py -f txt -o bandit_report.txt
+      continue-on-error: true # Allow subsequent reporting steps to complete upon finding flaws
+
+    # Step 5: Archive and publish the vulnerability metrics to the GitHub UI
+    - name: Upload Security Reports Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: security-audit-reports # Named container folder available for download
+        path: bandit_report.txt       # Targeted report file path to preserve
