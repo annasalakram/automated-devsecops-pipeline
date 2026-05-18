@@ -1,5 +1,5 @@
 # ==============================================================================
-# DevSecOps Automated Security Scanning Pipeline
+# DevSecOps Automated Security Scanning Pipeline.
 # Framework: GitHub Actions CI/CD Architecture
 # Purpose: Shift-Left Security Auditing (SAST & Secret Detection)
 # ==============================================================================
