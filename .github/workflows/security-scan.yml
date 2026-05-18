@@ -41,14 +41,24 @@ jobs:
     # Step 4: Install and execute Bandit to perform Static Application Security Testing (SAST)
     - name: Run Bandit (Python Static Application Security Testing)
       run: |
-        pip install bandit
+        pip install bandit bandit-sarif-formatter
+        bandit -r app.py -f sarif -o bandit_results.sarif
         # Audit app.py and compile findings into an exportable plain-text report
         bandit -r app.py -f txt -o bandit_report.txt
+        bandit -r app.py -f html -o bandit_report.html
       continue-on-error: true # Allow subsequent reporting steps to complete upon finding flaws
 
-    # Step 5: Archive and publish the vulnerability metrics to the GitHub UI
+    # Step 5: Upload SARIF
+    - name: Upload SARIF file to GitHub Security Tab
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: bandit_results.sarif
+
+    # Step 6: Archive and publish the vulnerability metrics to the GitHub UI
     - name: Upload Security Reports Artifact
       uses: actions/upload-artifact@v4
       with:
         name: security-audit-reports # Named container folder available for download
-        path: bandit_report.txt       # Targeted report file path to preserve
+        path: |
+        bandit_report.txt
+        bandit_report.html
