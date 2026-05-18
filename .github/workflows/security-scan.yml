@@ -64,6 +64,6 @@ jobs:
       if: always()
       with:
         name: security-audit-reports # Named container folder available for download
-        path:   |
+        path: |
           bandit_report.txt
-          bandit_report.html
+          bandit_report.sarif
