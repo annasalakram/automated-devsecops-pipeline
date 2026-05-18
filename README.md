@@ -19,10 +19,19 @@ During the initial pipeline simulation, the automated Bandit engine successfully
 | **B105** | 🟡 LOW | MEDIUM | Possible hardcoded password / credential string | Line 7 | [CWE-259](https://cwe.mitre.org/data/definitions/259.html) | 🛡️ Fixed |
 | **B608** | 🟠 MEDIUM | LOW | Hardcoded SQL expressions (SQL Injection vector) | Line 24 | [CWE-89](https://cwe.mitre.org/data/definitions/89.html) | 🛡️ Fixed |
 
-### 🔍 Vulnerability Brief & Remediation Engineering
+## 🔍 Vulnerability Brief & Remediation Engineering
 1. **B105 (Hardcoded Password):** Bandit detected an exposed plaintext infrastructure key (`AWS_SECRET_KEY`). 
    * *Remediation applied:* Extracted the sensitive data out of the source code and refactored the script to leverage secure environment variables via `os.getenv()`.
 2. **B608 (Insecure SQL String Construction):** Bandit identified risky string formatting inside an execute query wrapper, exposing the database to input manipulation.
    * *Remediation applied:* Implemented robust query parameterization (`?` placeholders) to properly neutralize user input, shifting the codebase to a fully hardened state.
 
 > 💡 **Professional Outcome:** Following these remediation commits, the automated pipeline executed a clean scan, successfully transitioning this enterprise repository to a global **PASSING** status.
+
+## 📂 How to Access the Live Dashboard
+
+> 💡 **Note for Security Professionals:**
+> Since this is an open-source project, the interactive security metrics are fully visible to the public. To inspect the live vulnerability tracking system, please follow these steps:
+>
+> 1. Navigate to the top navigation bar of this repository.
+> 2. Click on the **[🛡️ Security]** tab.
+> 3. Under the *Vulnerability alerts* section in the left sidebar, select **[Code scanning]**.
