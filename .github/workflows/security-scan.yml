@@ -65,5 +65,4 @@ jobs:
       with:
         name: security-audit-reports # Named container folder available for download
         path: |
-          bandit_report.txt
-          bandit_result.sarif
+          bandit_*.*
